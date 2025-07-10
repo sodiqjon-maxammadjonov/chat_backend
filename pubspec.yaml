@@ -1,0 +1,23 @@
+name: chat_backend
+description: A sample command-line application.
+version: 1.0.0
+# repository: https://github.com/my_org/my_repo
+
+environment:
+  sdk: ^3.8.1
+
+# Add regular dependencies here.
+dependencies:
+  shelf: ^1.4.1
+  shelf_router: ^1.1.4
+  shelf_cors_headers: ^0.1.5
+  dart_jsonwebtoken: ^3.2.0
+  crypto: ^3.0.3
+  postgres: ^3.5.6
+  bcrypt: ^1.1.3
+  uuid: ^4.0.0
+  dotenv: ^4.0.1
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.21.0
