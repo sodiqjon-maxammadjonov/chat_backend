@@ -1,11 +1,11 @@
 import 'dart:io';
+import 'package:chat_backend/routes/auth_routes.dart';
+import 'package:chat_backend/services/database_service.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:dotenv/dotenv.dart';
-import '../lib/routes/auth_routes.dart';
-import '../lib/services/database_service.dart';
 
 void main() async {
   // Load environment variables
@@ -18,7 +18,7 @@ void main() async {
   final router = Router();
 
   // Add auth routes
-  router.mount('/api/auth/', AuthRoutes().router);
+  router.mount('/api/auth/', AuthRoutes().router.call);
 
   // Health check
   router.get('/health', (Request request) {
@@ -29,10 +29,10 @@ void main() async {
   final handler = Pipeline()
       .addMiddleware(corsHeaders())
       .addMiddleware(logRequests())
-      .addHandler(router);
+      .addHandler(router.call);
 
   // Start server
-  final port = int.parse(env['PORT'] ?? '8080');
+  final port = int.parse(Platform.environment['PORT'] ?? '8080');
   final server = await serve(handler, InternetAddress.anyIPv4, port);
 
   print('🚀 Server running on port ${server.port}');

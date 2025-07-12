@@ -8,6 +8,7 @@ COPY . .
 RUN dart pub get --offline
 RUN dart compile exe bin/server.dart -o bin/server
 
+
 FROM scratch
 COPY --from=build /runtime/ /
 COPY --from=build /app/bin/server /app/bin/
