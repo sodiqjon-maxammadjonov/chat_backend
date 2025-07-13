@@ -96,15 +96,15 @@ chat_backend/
     # Port for the local development server
     SERVER_PORT=8080
 
-    # PostgreSQL connection settings (replace with your own)
+    # PostgreSQL connection settings replace with your own
     DB_HOST=localhost
     DB_PORT=5432
     DB_USER=postgres
-    DB_PASSWORD=your_password
-    DB_NAME=chat_db
+    DB_PASSWORD=create your password
+    DB_NAME=create your db name 
 
-    # JWT Secret Key (replace with a strong, unique secret)
-    JWT_SECRET_KEY=YOUR_OWN_SUPER_SECRET_KEY_HERE
+    # JWT Secret 
+    JWT_SECRET_KEY=kreate your own key 
     ```
     After creating your `.env` file, run the code generator:
     ```bash
