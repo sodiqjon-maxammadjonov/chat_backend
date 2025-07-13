@@ -1,31 +1,25 @@
-# Stage 1: Build stage
+# Dockerfile
+
 FROM dart:stable AS build
 
 WORKDIR /app
 
-# Copy pubspec files
-COPY pubspec.* ./
+COPY pubspec.yaml pubspec.lock ./
 RUN dart pub get
 
-# Copy source code
 COPY . .
 
-# Compile the application
 RUN dart compile exe bin/server.dart -o bin/server
 
-# Stage 2: Runtime stage
-FROM dart:stable AS runtime
+FROM scratch
 
 WORKDIR /app
 
-# Copy the compiled binary
-COPY --from=build /app/bin/server ./
+COPY --from=build /app/bin/server /app/bin/server
 
-# Expose port
+COPY --from=build /runtime/ /
+
+ENV PORT 8080
 EXPOSE 8080
 
-# Set environment variables
-ENV PORT=8080
-
-# Run the server
-CMD ["./server"]
+CMD ["/app/bin/server"]

@@ -1,338 +1,175 @@
-# 🚀 Dart Chat Backend - Authentication API
+# Dart & Shelf: Modern Backend for a Real-Time Chat App
 
-> **Real-time chat application** uchun Dart tilida yozilgan authentication backend servisi
+![Language: Dart](https://img.shields.io/badge/Language-Dart-0175C2?style=for-the-badge&logo=dart)
+![Framework: Shelf](https://img.shields.io/badge/Framework-Shelf-F24C00?style=for-the-badge)
+![Architecture: Clean](https://img.shields.io/badge/Architecture-Clean-8E44AD?style=for-the-badge)
+![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)
 
-## ✨ Features
+A modern, scalable, and robust backend foundation for a real-time chat application, built with **Dart** and the **Shelf** framework.
 
-- 🔐 **Secure Authentication** - JWT token based auth
-- 👤 **User Management** - Full CRUD operations
-- 🔒 **Password Hashing** - SHA-256 with salt
-- 🛡️ **Middleware Protection** - Route-level security
-- 📱 **Mobile Ready** - Flutter client uchun optimized
-- 🐳 **Docker Support** - Easy deployment
-- 🚀 **Railway Ready** - One-click deploy
-
-## 🛠️ Tech Stack
-
-- **Backend**: Dart 3.0+ with Shelf framework
-- **Database**: PostgreSQL
-- **Authentication**: JWT (JSON Web Tokens)
-- **Deployment**: Railway / Docker
-- **IDE**: IntelliJ IDEA / VS Code
-
-## 📋 Prerequisites
-
-- Dart SDK 3.0+
-- PostgreSQL 13+
-- Git
-
-## 🚀 Quick Start
-
-### 1. Clone repository
-
-```bash
-git clone https://github.com/username/dart_chat_backend.git
-cd dart_chat_backend
-```
-
-### 2. Install dependencies
-
-```bash
-dart pub get
-```
-
-### 3. Environment setup
-
-`.env` fayl yarating:
-
-```env
-# Database
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=chat_db
-DB_USER=postgres
-DB_PASSWORD=your_password
-
-# JWT Secret
-JWT_SECRET=your-super-secret-key-2024
-
-# Server
-PORT=8080
-```
-
-### 4. Database setup
-
-PostgreSQL database yarating:
-
-```sql
-CREATE DATABASE chat_db;
-```
-
-### 5. Run server
-
-```bash
-dart run bin/server.dart
-```
-
-Server `http://localhost:8080` da ishga tushadi.
-
-## 📡 API Endpoints
-
-### Authentication Routes
-
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| POST | `/api/auth/register` | User registration | ❌ |
-| POST | `/api/auth/login` | User login | ❌ |
-| GET | `/api/auth/profile` | Get user profile | ✅ |
-| PUT | `/api/auth/profile` | Update profile | ✅ |
-| POST | `/api/auth/logout` | User logout | ✅ |
-
-### Health Check
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/health` | Server health status |
-
-## 🧪 API Testing
-
-### Register User
-
-```bash
-curl -X POST http://localhost:8080/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "username": "johndoe",
-    "email": "john@example.com",
-    "password": "password123",
-    "display_name": "John Doe"
-  }'
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Muvaffaqiyatli ro'yxatdan o'tdi",
-  "data": {
-    "user": {
-      "id": "uuid-here",
-      "username": "johndoe",
-      "email": "john@example.com",
-      "display_name": "John Doe",
-      "is_online": false,
-      "created_at": "2024-01-01T00:00:00Z"
-    },
-    "token": "jwt-token-here"
-  }
-}
-```
-
-### Login User
-
-```bash
-curl -X POST http://localhost:8080/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "username_or_email": "johndoe",
-    "password": "password123"
-  }'
-```
-
-### Get Profile (Protected)
-
-```bash
-curl -X GET http://localhost:8080/api/auth/profile \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
-
-## 🐳 Docker Deployment
-
-### Build image
-
-```bash
-docker build -t dart-chat-backend .
-```
-
-### Run container
-
-```bash
-docker run -p 8080:8080 \
-  -e DB_HOST=your_db_host \
-  -e DB_PASSWORD=your_db_password \
-  -e JWT_SECRET=your_jwt_secret \
-  dart-chat-backend
-```
-
-## 🚀 Railway Deployment
-
-### 1. Railway setup
-
-1. [Railway.app](https://railway.app) da account oching
-2. GitHub repository connect qiling
-3. PostgreSQL plugin qo'shing
-
-### 2. Environment variables
-
-Railway dashboard'da quyidagi environment variables qo'shing:
-
-```env
-JWT_SECRET=your-super-secret-key-2024
-DB_HOST=${{Postgres.PGHOST}}
-DB_PORT=${{Postgres.PGPORT}}
-DB_NAME=${{Postgres.PGDATABASE}}
-DB_USER=${{Postgres.PGUSER}}
-DB_PASSWORD=${{Postgres.PGPASSWORD}}
-```
-
-### 3. Deploy
-
-```bash
-git push origin main
-```
-
-Railway avtomatik deploy qiladi.
-
-## 📊 Database Schema
-
-### Users Table
-
-```sql
-CREATE TABLE users (
-    id VARCHAR PRIMARY KEY,
-    username VARCHAR UNIQUE NOT NULL,
-    email VARCHAR UNIQUE NOT NULL,
-    password_hash VARCHAR NOT NULL,
-    profile_image VARCHAR,
-    display_name VARCHAR,
-    bio TEXT,
-    is_online BOOLEAN DEFAULT FALSE,
-    last_seen TIMESTAMP NOT NULL,
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL
-);
-```
-
-## 🔐 Security
-
-- **Password Hashing**: SHA-256 with salt
-- **JWT Tokens**: 7 kun expiry
-- **CORS**: Enabled for all origins
-- **Input Validation**: Server-side validation
-- **SQL Injection**: Parameterized queries
-
-## 🛡️ Error Handling
-
-API barcha xatoliklar uchun consistent format qaytaradi:
-
-```json
-{
-  "success": false,
-  "message": "Xatolik matn"
-}
-```
-
-## 📱 Flutter Integration
-
-Flutter client uchun HTTP requests:
-
-```dart
-// Registration
-final response = await http.post(
-  Uri.parse('$baseUrl/api/auth/register'),
-  headers: {'Content-Type': 'application/json'},
-  body: jsonEncode({
-    'username': username,
-    'email': email,
-    'password': password,
-  }),
-);
-
-// Login
-final response = await http.post(
-  Uri.parse('$baseUrl/api/auth/login'),
-  headers: {'Content-Type': 'application/json'},
-  body: jsonEncode({
-    'username_or_email': usernameOrEmail,
-    'password': password,
-  }),
-);
-
-// Protected request
-final response = await http.get(
-  Uri.parse('$baseUrl/api/auth/profile'),
-  headers: {
-    'Authorization': 'Bearer $token',
-    'Content-Type': 'application/json',
-  },
-);
-```
-
-## 📋 TODO
-
-- [ ] Email verification
-- [ ] Password reset
-- [ ] Profile image upload
-- [ ] Social login (Google, Facebook)
-- [ ] Rate limiting
-- [ ] Refresh tokens
-- [ ] User search
-- [ ] Friend system
-- [ ] Chat rooms
-- [ ] Real-time messaging
-- [ ] Push notifications
-
-## 🐛 Common Issues
-
-### Database Connection Error
-
-```
-Database connection failed: connection refused
-```
-
-**Solution**: PostgreSQL server ishlay olganini tekshiring va `.env` fayl to'g'ri ekanligini tasdiqlang.
-
-### JWT Secret Error
-
-```
-JWT verification failed
-```
-
-**Solution**: `JWT_SECRET` environment variable to'g'ri o'rnatilganini tekshiring.
-
-### Port Already in Use
-
-```
-Port 8080 is already in use
-```
-
-**Solution**: `.env` faylda `PORT` o'zgartirib boshqa port ishlatng.
-
-## 🤝 Contributing
-
-1. Fork repository
-2. Feature branch yarating (`git checkout -b feature/amazing-feature`)
-3. Commit qiling (`git commit -m 'Add amazing feature'`)
-4. Push qiling (`git push origin feature/amazing-feature`)
-5. Pull Request oching
-
-## 📄 License
-
-Bu loyiha MIT License ostida.
-
-## 👨‍💻 Author
-
-**Your Name**
-- GitHub: [@username](https://github.com/username)
-- Email: your.email@example.com
-
-## 🙏 Acknowledgments
-
-- Dart team for amazing language
-- Shelf framework contributors
-- Railway for easy deployment
-- PostgreSQL for reliable database
+This project is more than just a set of APIs; it is an **architectural template** designed to demonstrate best practices for building stable, testable, and maintainable systems aligned with **2025 software engineering standards**.
 
 ---
 
-**⭐ Agar loyiha yoqsa, star bosing!**
+## 🚀 Project Philosophy & Core Features
+
+The primary goal of this project is to showcase a production-ready approach to backend development in the Dart ecosystem.
+
+🏛️ **Clean Architecture**
+The project is strictly divided into three core, independent layers:
+- **API Layer:** Responsible for handling HTTP requests and responses (`Controllers`, `Middleware`, `Routes`).
+- **Business Logic Layer:** The "brains" of the application (`AuthService`), completely independent of frameworks and data sources.
+- **Data Layer:** The only part of the application that directly interacts with the database (`DataSource`).
+
+🔐 **Security-First Approach**
+- User authorization is secured using **JWT (JSON Web Tokens)**.
+- Passwords are never stored in plaintext. They are securely hashed using modern algorithms provided by the **`crypt`** library.
+
+🎯 **Type & Asynchronous Safety**
+- The entire codebase is built around asynchronous operations.
+- Error handling and success states in the business logic are managed using the `Either` monad from the `fpdart` package, preventing unexpected `null` values and exceptions.
+
+🧱 **Dependency Injection**
+- Components are loosely coupled. All dependencies are instantiated and "injected" from a central location (`server.dart`), making the codebase flexible and robust.
+
+---
+
+## 🛠️ Technology Stack
+
+- **Language:** Dart 3.x
+- **Backend Framework:** Shelf & Shelf Router
+- **Database:** PostgreSQL
+- **Security:** `dart_jsonwebtoken` (JWT), `crypt` (hashing)
+- **Configuration:** `envied` (for `.env` file management)
+- **Functional Programming:** `fpdart` (for `Either`)
+- **Containerization:** Docker
+
+---
+
+## 📁 Project Structure
+
+A well-organized structure is key to a scalable project.
+chat_backend/
+├── .env # Project configuration (do not commit to Git)
+├── Dockerfile # For building a production-ready container
+├── pubspec.yaml
+└── lib/
+├── api/ # API Layer (The "Door")
+│ ├── controllers/
+│ ├── middleware/
+│ └── routes.dart
+├── business_logic/ # Business Logic Layer (The "Brain")
+├── core/ # Core utilities (Failures, Config)
+├── data/ # Data Layer (The "Hands")
+│ ├── datasources/
+│ └── models/
+├── services/ # Low-level infrastructure services (DB, Hashing, Token)
+└── server.dart # Entry point and dependency injection
+
+---
+
+## 🏁 Getting Started
+
+### Prerequisites
+- Dart SDK (version 3.0+)
+- PostgreSQL (for local testing) or a cloud-based instance (e.g., Google Cloud SQL)
+- Docker (for deployment)
+
+### Local Setup & Installation
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/sodiqjon-maxammadjonov/chat_backend.git
+    cd chat_backend
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    dart pub get
+    ```
+
+3.  **Set up environment variables:**
+    Create a `.env` file in the project root. You can copy the structure from the example below.
+
+    **`.env.example`:**
+    ```env
+    # Port for the local development server
+    SERVER_PORT=8080
+
+    # PostgreSQL connection settings (replace with your own)
+    DB_HOST=localhost
+    DB_PORT=5432
+    DB_USER=postgres
+    DB_PASSWORD=your_password
+    DB_NAME=chat_db
+
+    # JWT Secret Key (replace with a strong, unique secret)
+    JWT_SECRET_KEY=YOUR_OWN_SUPER_SECRET_KEY_HERE
+    ```
+    After creating your `.env` file, run the code generator:
+    ```bash
+    dart run build_runner build
+    ```
+
+4.  **Set up the database:**
+    In your PostgreSQL instance, create a database named `chat_db`. Then, execute the following SQL query to create the `users` table:
+    ```sql
+    CREATE TABLE users (
+        id UUID PRIMARY KEY,
+        username VARCHAR(50) UNIQUE NOT NULL,
+        display_name VARCHAR(100) NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        created_at TIMESTAMPTZ NOT NULL
+    );
+    ```
+
+5.  **Run the server:**
+    ```bash
+    dart run bin/server.dart
+    ```
+    The server will start on `http://localhost:8080`.
+
+---
+
+## 🌐 API Endpoints
+
+All primary endpoints are prefixed with `/api/auth`.
+
+| Method | URL                 | Description                  | Protection    |
+|:-------|:--------------------|:-----------------------------|:--------------|
+| `POST` | `/register`         | Register a new user          | None          |
+| `POST` | `/login`            | Log in and receive a JWT     | None          |
+| `GET`  | `/profile`          | Get the user's profile data  | JWT           |
+
+---
+
+## ☁️ Deployment to Google Cloud Run
+
+This project is configured for easy deployment to Google Cloud Run.
+
+1.  Set up a Cloud SQL for PostgreSQL instance on your Google Cloud project and create the database and table as described above.
+2.  Ensure you have the `gcloud CLI` installed and authenticated.
+3.  Execute the following command, replacing the placeholders with your actual configuration values:
+
+    ```powershell
+    gcloud run deploy [SERVICE_NAME] `
+        --source . `
+        --platform managed `
+        --region [YOUR_REGION] `
+        --allow-unauthenticated `
+        --set-env-vars="DB_HOST=[YOUR_CLOUDSQL_CONNECTION_NAME],DB_PORT=5432,DB_USER=[DB_USER],DB_PASSWORD=[DB_PASSWORD],DB_NAME=[DB_NAME],JWT_SECRET_KEY=[YOUR_JWT_KEY]" `
+        --add-cloudsql-instances "[YOUR_CLOUDSQL_CONNECTION_NAME]"
+    ```
+
+---
+
+## 🤝 Contributing
+
+Contributions are always welcome! Whether you have an idea, find a bug, or want to improve the code, feel free to **Fork** the repository and submit a **Pull Request**. If you find this project useful, please consider giving it a ⭐!
+
+---
+
+## 📄 License
+
+This project is distributed under the MIT License. See the `LICENSE` file for more information.
