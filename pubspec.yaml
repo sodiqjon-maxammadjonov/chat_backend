@@ -30,9 +30,10 @@ dependencies:
   
   # Xatolik yoki Muvaffaqiyatni chiroyli boshqarish uchun
   fpdart: ^1.1.0
+  dotenv: ^4.2.0
 
 
 dev_dependencies:
   lints: ^6.0.0
-  build_runner: ^2.4.10
-  envied_generator: ^1.1.1
+#  build_runner: ^2.4.10
+#  envied_generator: ^1.1.1

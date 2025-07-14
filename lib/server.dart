@@ -52,7 +52,7 @@ class Server {
       final server = await shelf_io.serve(
         handler,
         '0.0.0.0',
-        AppConfig.serverPort,
+        int.parse(await AppConfig.serverPort),
       );
 
       print('🚀 Server ${server.address.host}:${server.port} manzilida ishga tushdi!');

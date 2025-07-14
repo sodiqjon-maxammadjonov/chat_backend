@@ -15,11 +15,11 @@ class DatabaseService {
       print('🗄️  Ma\'lumotlar bazasiga yangi ulanish yaratilmoqda...');
 
       final endpoint = Endpoint(
-        host: AppConfig.dbHost,
-        port: AppConfig.dbPort,
-        database: AppConfig.dbName,
-        username: AppConfig.dbUser,
-        password: AppConfig.dbPassword,
+        host: await AppConfig.dbHost,
+        port: int.parse(await AppConfig.dbPort),
+        database: await AppConfig.dbName,
+        username: await AppConfig.dbUser,
+        password: await AppConfig.dbPassword,
       );
 
       final settings = ConnectionSettings(
