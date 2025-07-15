@@ -1,39 +1,53 @@
 # pubspec.yaml
 
-name: chat_backend
-description: A robust and scalable backend for a real-time chat application.
+name: chat_app_backend
+description: A scalable and production-ready Dart backend for a chat application.
 version: 1.0.0
+# Bu loyiha pub.dev ga joylanmasligini bildiradi
 publish_to: 'none'
 
 environment:
-  sdk: '>=3.4.0 <4.0.0' # Eng so'nggi Dart versiyasidan foydalanish
+  # Eng so'nggi Dart SDK'sini talab qiladi
+  sdk: '>=3.0.0 <4.0.0'
 
+# Asosiy bog'liqliklar
 dependencies:
-  # Web server uchun asos
+  # --- SERVER ---
   shelf: ^1.4.1
   shelf_router: ^1.1.4
 
-  # Ma'lumotlar bazasi (PostgreSQL uchun eng yaxshi variantlardan)
-  postgres: ^3.0.0 # Agar boshqa DB ishlatsangiz, shunga mos paketni tanlang
+  # --- DATABASE ---
+  # PostgreSQL bilan ishlash uchun rasmiy paket
+  postgres: ^2.6.1
 
-  # Parol xavfsizligi uchun (eng zamonaviy standart)
-  crypt: ^4.3.1
-
-  # JWT (JSON Web Tokens) bilan ishlash uchun
-  dart_jsonwebtoken: ^3.2.0
-
-  # .env faylidan xavfsiz konfiguratsiya o'qish uchun
-  envied: ^1.1.1
-
-  # Unikal IDlar generatsiyasi uchun
-  uuid: ^4.4.0
-  
-  # Xatolik yoki Muvaffaqiyatni chiroyli boshqarish uchun
-  fpdart: ^1.1.0
+  # --- UTILS & HELPERS ---
+  # Dependency Injection uchun
+  get_it: ^7.7.0
+  # .env fayllaridan o'qish uchun
   dotenv: ^4.2.0
+  # Funktsional dasturlash uchun (Either, Option)
+  dartz: ^0.10.1
+  # Xavfsiz parol heshlash (bcript)
+  bcrypt: ^1.1.3
+  # JWT tokenlarni yaratish va tekshirish uchun
+  dart_jsonwebtoken: ^3.2.0
+  # Noyob ID (UUID) generatsiyasi uchun
+  uuid: ^4.5.1
+  # SMTP orqali email yuborish uchun
+  mailer: ^6.1.0
+  # Qiymatga asoslangan tenglik va hashCode'ni osonlashtirish uchun
+  equatable: ^2.0.5
+  # Modellar uchun JSON serializatsiya/deserializatsiya annotatsiyalari
+  json_annotation: ^4.9.0
+  # Loglarni yozib borish uchun
+  logging: ^1.2.0
 
-
+# Faqat ishlab chiqish jarayonida kerak bo'ladigan bog'liqliklar
 dev_dependencies:
-  lints: ^6.0.0
-#  build_runner: ^2.4.10
-#  envied_generator: ^1.1.1
+  # Tavsiya etilgan linter qoidalari to'plami
+  lints: ^3.0.0
+  # Test yozish uchun
+  test: ^1.24.0
+  # Kod generatsiyasi uchun
+  build_runner: ^2.4.11
+  json_serializable: ^6.8.0

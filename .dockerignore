@@ -1,13 +1,35 @@
 # .dockerignore
 
-# Build-related files and folders
-build/
-.dart_tool/
-.idea/
+# Git
+.git
+.gitignore
 
-# Lockfiles (will be regenerated inside the container)
-# We can let pubspec.lock pass to ensure dependency consistency
+# Docker
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# IDE va tahrirlovchi sozlamalari
+.idea/
+.vscode/
+*.iml
+*.code-workspace
+
+# Dart & Flutter
+.dart_tool/
+.packages
+build/
+# Generatsiya qilingan fayllar
+*.g.dart
+*.freezed.dart
+
+# Bog'liqliklar faylini nusxalaymiz, lekin papkalarni emas
 # pubspec.lock
 
-# IDE settings
-*.iml```
+# Lokal konfiguratsiya (MAXFIY!)
+.env
+.env.*
+secrets/
+
+# Loglar va boshqa lokal fayllar
+*.log
