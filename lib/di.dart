@@ -1,7 +1,9 @@
+import 'package:chat_app_backend/services/database_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logging/logging.dart';
 import 'package:postgres/postgres.dart';
 import 'config/env.dart';
+import 'core/security/hash.dart';
 import 'core/server/shelf_server.dart';
 
 final locator = GetIt.instance;
@@ -42,7 +44,14 @@ Future<void> init(Env env) async {
 
   await locator.isReady<PostgreSQLConnection>();
 
+  locator.registerLazySingleton<DatabaseService>(
+        () => DatabaseService(locator<PostgreSQLConnection>()),
+  );
 
+  locator.registerLazySingleton<HashService>(() => HashService());
+
+  _log.info('-> DatabaseService ro\'yxatdan o\'tdi.');
+  _log.info('-> HashService ro\'yxatdan o\'tdi.');
   locator.registerLazySingleton<ShelfServer>(
         () => ShelfServer(
       env: locator<Env>(),

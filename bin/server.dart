@@ -1,14 +1,16 @@
-// bin/server.dart (Eng Toza va Yakuniy Yechim)
+// bin/server.dart (Migratsiya logikasi bilan to'ldirilgan versiya)
 
 import 'dart:io';
 
-// Kerakli importlar
+// --- YANGI IMPORTLAR ---
+import 'package:chat_app_backend/services/database_service.dart';
+// Bu importlarni o'zgartirmang, ular shundoq ham bor edi
 import 'package:chat_app_backend/config/env.dart';
 import 'package:chat_app_backend/core/server/shelf_server.dart';
 import 'package:chat_app_backend/di.dart' as di;
 import 'package:logging/logging.dart';
 
-/// .env faylini o'qib, `Map<String, String>` qaytaradigan funksiya.
+// Bu funksiya o'zgarishsiz qoladi
 Future<Map<String, String>> _loadEnvMap() async {
   final envPath = r'D:\testing\chat_app_backend\.env';
   final envFile = File(envPath);
@@ -39,18 +41,14 @@ Future<Map<String, String>> _loadEnvMap() async {
   return envMap;
 }
 
-
 Future<void> main() async {
   try {
-    // 1-QADAM: .env faylini Mapga yuklaymiz
     final envVariables = await _loadEnvMap();
     print('✅ .env fayli qo\'lda o\'qilib, Mapga yuklandi.');
 
-    // 2-QADAM: Map'ni Env.fromEnv metodiga uzatamiz
     final appEnv = Env.fromEnv(variables: envVariables);
     print('✅ Konfiguratsiya muvaffaqiyatli yuklandi.');
 
-    // Qolgan barcha kod o'zgarmasdan ishlayveradi...
     Logger.root.level = appEnv.logLevel;
     Logger.root.onRecord.listen((record) {
       print('${record.level.name}: ${record.time}: [${record.loggerName}] ${record.message}');
@@ -60,9 +58,20 @@ Future<void> main() async {
     final _log = Logger('Server');
     _log.info('Logger muvaffaqiyatli sozlandi. Log darajasi: ${appEnv.logLevel.name}');
 
+    // Dependency Injection'ni ishga tushiramiz
     await di.init(appEnv);
     _log.info('Bog\'liqliklar (Dependency Injection) muvaffaqiyatli o\'rnatildi.');
 
+    // --- MIGRATSIYA QISMINI QO'SHAMIZ ---
+    // 1. Dependency Injection'dan DatabaseService namunasini olamiz
+    _log.info('Ma\'lumotlar ombori migratsiyasini tekshirish boshlandi...');
+    final dbService = di.locator<DatabaseService>();
+
+    // 2. Dastlabki migratsiyani bajarish funksiyasini chaqiramiz
+    await dbService.runInitialMigration();
+    // ------------------------------------
+
+    // Endi serverni ishga tushiramiz
     final server = di.locator<ShelfServer>();
     await server.start();
     _log.info('🚀🚀🚀 Server ${appEnv.host}:${appEnv.port} manzilida ishga tushdi! 🚀🚀🚀');
