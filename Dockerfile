@@ -1,48 +1,26 @@
-# Dockerfile
-
-# 1-BOSQICH: Qurish (Build) muhiti
-# Loyihani kompilyatsiya qilish uchun rasmiy Dart SDK'siga ega image'dan foydalanamiz
+# 1. Dart bilan build bosqichi
 FROM dart:stable AS build
 
-# Konteyner ichida ishlash uchun direktoriya
 WORKDIR /app
 
-# Birinchi navbatda faqat bog'liqliklar faylini nusxalaymiz.
-# Bu Docker'ning keshidan samarali foydalanishga yordam beradi.
-# Agar faqat kod o'zgarsa, bog'liqliklar qaytadan yuklanmaydi.
 COPY pubspec.* ./
 RUN dart pub get
 
-# Butun loyiha kodini konteynerga nusxalaymiz
-COPY . .
-
-# Xavfsizlik uchun yana bir bor tekshirib, bog'liqliklarni offline rejimda olamiz.
-RUN dart pub get --offline
-
-# Ilovamizni production uchun optimallashtirilgan yagona ishga tushirish fayliga kompilyatsiya qilamiz (AOT compilation).
+COPY . ./
 RUN dart compile exe bin/server.dart -o bin/server
 
+# 2. Minimal image
+FROM debian:stable-slim
 
-# 2-BOSQICH: Ishga tushirish (Runtime) muhiti
-# Ilgari qurilgan image'dagi natijani kichik va xavfsiz `scratch` image'iga o'tkazamiz.
-# `scratch` - bu hech qanday ortiqcha narsasi yo'q bo'm-bo'sh image.
-FROM scratch
+# Foydali utilitalarni o'rnatamiz
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Birinchi bosqichdan faqat kerakli fayllarni nusxalaymiz:
-# 1. Kompilyatsiya qilingan server fayli
-COPY --from=build /app/bin/server /app/bin/
+COPY --from=build /app/bin/server /app/bin/server
 
-# 2. Xavfsiz HTTPS ulanishlari uchun zarur bo'lgan tizim sertifikatlari
-COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY .env .env
 
-# `.env` fayli konteynerga kiritilmaydi. U tashqaridan `--env-file` bayrog'i
-# yoki bulutli platformalarning (Cloud Run, AWS) maxsus xizmatlari orqali ta'minlanadi.
-
-# Konteyner qaysi portni "tinglashini" ko'rsatamiz.
-# Bu `.env` faylidagi PORT bilan bir xil bo'lishi tavsiya etiladi.
-EXPOSE 8080
-
-# Konteyner ishga tushganda bajariladigan asosiy buyruq
-CMD ["/app/bin/server"]
+ENTRYPOINT ["sh", "-c", "export $(cat .env | grep -v '^#' | xargs) && /app/bin/server"]

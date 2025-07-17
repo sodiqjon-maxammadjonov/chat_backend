@@ -26,9 +26,6 @@ build/
 # Bog'liqliklar faylini nusxalaymiz, lekin papkalarni emas
 # pubspec.lock
 
-# Lokal konfiguratsiya (MAXFIY!)
-.env
-.env.*
 secrets/
 
 # Loglar va boshqa lokal fayllar
