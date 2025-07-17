@@ -113,9 +113,6 @@ class DatabaseService {
   EXECUTE FUNCTION update_updated_at_column();
     ''';
 
-    // Barcha so'rovlarni bitta tranzaksiya ichida bajaramiz.
-    // Bu agar biror jadvalni yaratishda xato bo'lsa, oldin yaratilganlari ham
-    // bekor qilinishini ta'minlaydi.
     await _connection.transaction((ctx) async {
       await ctx.execute(script);
     });

@@ -1,7 +1,7 @@
 // bin/server.dart (Cloud Run uchun moslashtirilgan versiya)
 
 import 'dart:io';
-
+import 'package:dotenv/dotenv.dart';
 import 'package:chat_app_backend/services/database_service.dart';
 import 'package:chat_app_backend/config/env.dart';
 import 'package:chat_app_backend/core/server/shelf_server.dart';
@@ -12,7 +12,14 @@ Future<void> main() async {
   print('🚀 Server boshlash jarayoni...');
 
   try {
-    final envVariables = Platform.environment;
+    final dotenv = DotEnv(); // includePlatformEnvironment: false
+    dotenv.load();
+
+    final envVariables = {
+      ...Platform.environment,
+      ...dotenv.map,
+    };
+
     print('✅ Environment variables yuklandi.');
 
     final appEnv = Env.fromEnv(variables: envVariables);
