@@ -59,7 +59,7 @@ class DatabaseService {
       CREATE TABLE user_profiles (
         user_id UUID PRIMARY KEY,
         phone VARCHAR(30),
-        device_info JSONB, -- Qurilma ma'lumotini JSON formatida saqlash uchun qulay
+        device_info JSONB, 
         last_online TIMESTAMP WITH TIME ZONE,
         is_online BOOLEAN NOT NULL DEFAULT FALSE,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE

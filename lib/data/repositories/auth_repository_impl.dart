@@ -34,18 +34,17 @@ class AuthRepositoryImpl implements AuthRepository {
       // 1. Parolni xavfsiz heshga aylantiramiz
       final hashedPassword = _hashService.hashPassword(password);
 
-      // ✅✅✅ MUAMMONING YECHIMI MANA SHU YERDA ✅✅✅
-      // Biz "id" ustunini so'rovdan olib tashlaymiz. Shunda PostgreSQL
-      // jadval sxemasidagi "DEFAULT uuid_generate_v4()" qoidasini ishlatadi.
-      // "RETURNING id" bizga yangi yaratilgan foydalanuvchining ID'sini qaytaradi.
+      final id = const Uuid().v4();
       final result = await _connection.query(
-        'INSERT INTO users (email, username, password_hash) VALUES (@email, @username, @password) RETURNING id',
+        'INSERT INTO users (id, email, username, password_hash) VALUES (@id, @email, @username, @password) RETURNING id',
         substitutionValues: {
+          'id': id,
           'email': email,
           'username': username,
           'password': hashedPassword,
         },
       );
+
 
       // Natija bo'sh emasligini tekshiramiz
       if (result.isEmpty || result.first.isEmpty) {
