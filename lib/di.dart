@@ -2,6 +2,7 @@ import 'package:chat_app_backend/services/database_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logging/logging.dart';
 import 'package:postgres/postgres.dart';
+import 'api/auth_api.dart';
 import 'config/env.dart';
 import 'core/security/hash.dart';
 import 'core/server/shelf_server.dart';
@@ -59,5 +60,23 @@ Future<void> init(Env env) async {
     ),
   );
   _log.info('-> ShelfServer ro\'yxatdan o\'tdi.');
+  locator.registerLazySingleton<AuthApi>(
+        () => AuthApi(locator()),
+  );
+  _log.info('-> API\'lar (AuthApi) ro\'yxatdan o\'tdi.');
+
+
+  // --- 6. ASOSIY SERVER ---
+  locator.registerLazySingleton<ShelfServer>(
+        () => ShelfServer(
+      env: locator(),
+      // DI'dan AuthApi'ni olib, uning routerini serverga beramiz
+      apiRouters: [
+        locator<AuthApi>().router,
+      ],
+    ),
+  );
+  _log.info('-> Asosiy server (ShelfServer) ro\'yxatdan o\'tdi.');
+
   _log.info('✅ Barcha bog\'liqliklar muvaffaqiyatli ro\'yxatdan o\'tkazildi!');
 }
