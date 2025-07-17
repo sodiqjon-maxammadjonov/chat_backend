@@ -1,36 +1,38 @@
-# Dart & Shelf: Modern Backend for a Real-Time Chat App
-
-![Language: Dart](https://img.shields.io/badge/Language-Dart-0175C2?style=for-the-badge&logo=dart)
+# Dart & Shelf: A Production-Ready Backend
+![Language: Dart](https://img.shields.io/badge/Language-Dart_3.x-0175C2?style=for-the-badge&logo=dart)
 ![Framework: Shelf](https://img.shields.io/badge/Framework-Shelf-F24C00?style=for-the-badge)
 ![Architecture: Clean](https://img.shields.io/badge/Architecture-Clean-8E44AD?style=for-the-badge)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)
 
-A modern, scalable, and robust backend foundation for a real-time chat application, built with **Dart** and the **Shelf** framework.
+A modern, scalable, and robust backend foundation for a full-featured application, meticulously built with **Dart** and the minimalist **Shelf** framework.
 
-This project is more than just a set of APIs; it is an **architectural template** designed to demonstrate best practices for building stable, testable, and maintainable systems aligned with **2025 software engineering standards**.
+This repository serves as an **architectural template** demonstrating production-grade best practices aligned with **2025 software engineering standards**. It's a comprehensive starting point for any Dart developer aiming to build stable, testable, and maintainable systems.
 
 ---
 
 ## 🚀 Project Philosophy & Core Features
 
-The primary goal of this project is to showcase a production-ready approach to backend development in the Dart ecosystem.
+This project showcases a clean, decoupled, and secure approach to backend development within the Dart ecosystem.
 
-🏛️ **Clean Architecture**
+🏛️ **Strict Clean Architecture**
 The project is strictly divided into three core, independent layers:
-- **API Layer:** Responsible for handling HTTP requests and responses (`Controllers`, `Middleware`, `Routes`).
-- **Business Logic Layer:** The "brains" of the application (`AuthService`), completely independent of frameworks and data sources.
-- **Data Layer:** The only part of the application that directly interacts with the database (`DataSource`).
+- **API Layer (`/lib/api`):** Handles HTTP requests, responses, and validation. It is the only "door" to the application.
+- **Domain Layer (`/lib/domain`):** The "brains" of the application, containing business entities, abstract repositories, and use cases. It is completely independent of frameworks and data sources.
+- **Data Layer (`/lib/data`):** The "hands" of the application. It implements the contracts defined in the Domain Layer and is the only part that interacts directly with the database.
 
-🔐 **Security-First Approach**
-- User authorization is secured using **JWT (JSON Web Tokens)**.
-- Passwords are never stored in plaintext. They are securely hashed using modern algorithms provided by the **`crypt`** library.
+🔐 **Security as a Priority**
+- User authentication and authorization are secured using **JWT (JSON Web Tokens)**.
+- Passwords are never stored in plaintext. They are securely hashed using the industry-standard **BCrypt** algorithm via the `bcrypt` package.
 
-🎯 **Type & Asynchronous Safety**
-- The entire codebase is built around asynchronous operations.
-- Error handling and success states in the business logic are managed using the `Either` monad from the `fpdart` package, preventing unexpected `null` values and exceptions.
+🎯 **Type Safety & Robust Error Handling**
+- The entire codebase leverages Dart's strong type system.
+- All operations that can fail (database queries, business logic checks) use the `Either` type from the `dartz` package, eliminating unexpected `null` values and providing clear, predictable error channels (`Failure` vs. `Success`).
 
-🧱 **Dependency Injection**
-- Components are loosely coupled. All dependencies are instantiated and "injected" from a central location (`server.dart`), making the codebase flexible and robust.
+🧱 **Dependency Injection with `get_it`**
+- All components are loosely coupled. Dependencies are instantiated and "injected" from a central location (`lib/di.dart`), making the codebase flexible, testable, and easy to refactor.
+
+🔄 **Automated Database Migrations**
+- The system includes a simple, automated initial migration service. On first run, it checks for the existence of required tables and creates the entire database schema if they are not found.
 
 ---
 
@@ -38,10 +40,11 @@ The project is strictly divided into three core, independent layers:
 
 - **Language:** Dart 3.x
 - **Backend Framework:** Shelf & Shelf Router
-- **Database:** PostgreSQL
-- **Security:** `dart_jsonwebtoken` (JWT), `crypt` (hashing)
-- **Configuration:** `envied` (for `.env` file management)
-- **Functional Programming:** `fpdart` (for `Either`)
+- **Database:** PostgreSQL (`postgres` package)
+- **Security:** `dart_jsonwebtoken` (JWT), `bcrypt` (hashing)
+- **Configuration:** Manual `.env` parsing
+- **Functional Programming:** `dartz` (for `Either`)
+- **Dependency Injection:** `get_it`
 - **Containerization:** Docker
 
 ---
@@ -49,22 +52,32 @@ The project is strictly divided into three core, independent layers:
 ## 📁 Project Structure
 
 A well-organized structure is key to a scalable project.
-chat_backend/
-├── .env # Project configuration (do not commit to Git)
-├── Dockerfile # For building a production-ready container
+
+```
+chat_app_backend/
+├── .env          # Local configuration (DO NOT COMMIT)
+├── Dockerfile    # For building a production-ready container
+├── README.md     # You are here!
 ├── pubspec.yaml
 └── lib/
-├── api/ # API Layer (The "Door")
-│ ├── controllers/
-│ ├── middleware/
-│ └── routes.dart
-├── business_logic/ # Business Logic Layer (The "Brain")
-├── core/ # Core utilities (Failures, Config)
-├── data/ # Data Layer (The "Hands")
-│ ├── datasources/
-│ └── models/
-├── services/ # Low-level infrastructure services (DB, Hashing, Token)
-└── server.dart # Entry point and dependency injection
+    ├── api/                 # API Layer (The "Door")
+    │   └── auth_api.dart
+    ├── core/                # Core utilities, middleware, and services
+    │   ├── config/
+    │   ├── error/
+    │   └── security/
+    ├── data/                # Data Layer (The "Hands")
+    │   ├── models/
+    │   └── repositories/
+    ├── domain/              # Domain Layer (The "Brain")
+    │   ├── entities/
+    │   ├── repositories/
+    │   └── usecases/
+    ├── services/            # Low-level infrastructure services (e.g., Database)
+    └── di.dart              # Dependency Injection setup
+└── bin/
+    └── server.dart          # Application entry point
+```
 
 ---
 
@@ -72,15 +85,15 @@ chat_backend/
 
 ### Prerequisites
 - Dart SDK (version 3.0+)
-- PostgreSQL (for local testing) or a cloud-based instance (e.g., Google Cloud SQL)
+- PostgreSQL Server (for local testing)
 - Docker (for deployment)
 
 ### Local Setup & Installation
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/sodiqjon-maxammadjonov/chat_backend.git
-    cd chat_backend
+    git clone [Your-GitHub-Repo-URL]
+    cd [your-repo-name]
     ```
 
 2.  **Install dependencies:**
@@ -93,83 +106,86 @@ chat_backend/
 
     **`.env.example`:**
     ```env
-    # Port for the local development server
-    SERVER_PORT=8080
+    # --- APPLICATION ---
+    HOST=0.0.0.0
+    PORT=8080
+    LOG_LEVEL=ALL
 
-    # PostgreSQL connection settings replace with your own
+    # --- DATABASE (PostgreSQL) ---
     DB_HOST=localhost
     DB_PORT=5432
     DB_USER=postgres
-    DB_PASSWORD=create your password
-    DB_NAME=create your db name 
+    DB_PASSWORD=your_db_password
+    DB_NAME=chat_db
 
-    # JWT Secret 
-    JWT_SECRET_KEY=kreate your own key 
+    # --- SECURITY (JWT) ---
+    JWT_SECRET=your_super_secret_and_long_jwt_key
+    JWT_ISSUER=http://localhost:8080
+    JWT_EXPIRATION_MINUTES=60
     ```
-    After creating your `.env` file, run the code generator:
-    ```bash
-    dart run build_runner build
-    ```
+    *(For a full list of required variables, see `lib/core/config/env.dart`)*
 
-4.  **Set up the database:**
-    In your PostgreSQL instance, create a database named `chat_db`. Then, execute the following SQL query to create the `users` table:
-    ```sql
-    CREATE TABLE users (
-        id UUID PRIMARY KEY,
-        username VARCHAR(50) UNIQUE NOT NULL,
-        display_name VARCHAR(100) NOT NULL,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        password_hash TEXT NOT NULL,
-        created_at TIMESTAMPTZ NOT NULL
-    );
-    ```
-
-5.  **Run the server:**
+4.  **Run the server:**
+    Ensure your local PostgreSQL server is running. Then, start the application:
     ```bash
     dart run bin/server.dart
     ```
-    The server will start on `http://localhost:8080`.
+    The server will start on `http://localhost:8080`. The first time it runs, it will automatically create all necessary database tables.
 
 ---
 
 ## 🌐 API Endpoints
 
-All primary endpoints are prefixed with `/api/auth`.
+All authentication endpoints are prefixed with `/api/v1/auth`.
 
 | Method | URL                 | Description                  | Protection    |
 |:-------|:--------------------|:-----------------------------|:--------------|
 | `POST` | `/register`         | Register a new user          | None          |
 | `POST` | `/login`            | Log in and receive a JWT     | None          |
-| `GET`  | `/profile`          | Get the user's profile data  | JWT           |
+| ...    | *...more to come*   |                              | JWT           |
 
 ---
 
 ## ☁️ Deployment to Google Cloud Run
 
-This project is configured for easy deployment to Google Cloud Run.
+This project is fully containerized and ready for easy deployment to a serverless platform like Google Cloud Run.
 
-1.  Set up a Cloud SQL for PostgreSQL instance on your Google Cloud project and create the database and table as described above.
-2.  Ensure you have the `gcloud CLI` installed and authenticated.
-3.  Execute the following command, replacing the placeholders with your actual configuration values:
+1.  **Set up Cloud SQL for PostgreSQL:** Create a PostgreSQL instance in your Google Cloud project (e.g., in the `europe-west1` region). Note the **Connection Name** and set a password for the `postgres` user.
+2.  **Build and Push the Docker Image:**
+    ```bash
+    # Replace [PROJECT_ID] with your actual Google Cloud Project ID
+    docker build -t gcr.io/[PROJECT_ID]/chat-backend .
+    docker push gcr.io/[PROJECT_ID]/chat-backend
+    ```
+
+3.  **Deploy to Cloud Run:**
+    Execute the following command, replacing the placeholders with your actual configuration values. This single command creates the service and configures it completely.
 
     ```powershell
-    gcloud run deploy [SERVICE_NAME] `
-        --source . `
-        --platform managed `
-        --region [YOUR_REGION] `
-        --allow-unauthenticated `
-        --set-env-vars="DB_HOST=[YOUR_CLOUDSQL_CONNECTION_NAME],DB_PORT=5432,DB_USER=[DB_USER],DB_PASSWORD=[DB_PASSWORD],DB_NAME=[DB_NAME],JWT_SECRET_KEY=[YOUR_JWT_KEY]" `
-        --add-cloudsql-instances "[YOUR_CLOUDSQL_CONNECTION_NAME]"
+    # Replace placeholders with your values
+    $SQL_CONNECTION_NAME="[YOUR_PROJECT_ID]:[YOUR_REGION]:[YOUR_INSTANCE_ID]"
+    $DB_PASSWORD="[YOUR_CLOUD_SQL_PASSWORD]"
+
+    gcloud run deploy chat-backend `
+      --image gcr.io/[YOUR_PROJECT_ID]/chat-backend:latest `
+      --region [YOUR_REGION] `
+      --allow-unauthenticated `
+      --project=[YOUR_PROJECT_ID] `
+      --add-cloudsql-instances="$SQL_CONNECTION_NAME" `
+      --set-env-vars="APP_ENV=production,HOST=0.0.0.0,PORT=8080,LOG_LEVEL=INFO,DB_USER=postgres,DB_PASSWORD=$DB_PASSWORD,DB_NAME=chat_db,DB_HOST=/cloudsql/$SQL_CONNECTION_NAME,DB_POOL_SIZE=10,JWT_SECRET=[YOUR_JWT_SECRET],JWT_EXPIRATION_MINUTES=60"
     ```
+    *(Note: Add other variables like SMTP settings to the `--set-env-vars` flag as needed.)*
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are always welcome! Whether you have an idea, find a bug, or want to improve the code, feel free to **Fork** the repository and submit a **Pull Request**. If you find this project useful, please consider giving it a ⭐!
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. Don't forget to give the project a star! Thanks again!
 
 ---
 
 ## 📄 License
 
-This project is distributed under the MIT License. See the `LICENSE` file for more information.
+Distributed under the MIT License. See `LICENSE` file for more information.
