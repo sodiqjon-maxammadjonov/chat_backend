@@ -1,25 +1,57 @@
 // bin/server.dart (Cloud Run uchun moslashtirilgan versiya)
 
 import 'dart:io';
-import 'package:dotenv/dotenv.dart';
+
 import 'package:chat_app_backend/services/database_service.dart';
 import 'package:chat_app_backend/config/env.dart';
 import 'package:chat_app_backend/core/server/shelf_server.dart';
 import 'package:chat_app_backend/di.dart' as di;
 import 'package:logging/logging.dart';
 
+Future<Map<String, String>> loadEnvMap() async {
+  final envPath = '.env'; // Relative path
+  final envFile = File(envPath);
+  final envMap = <String, String>{};
+
+  if (!envFile.existsSync()) {
+    print('⚠️  .env fayli topilmadi, environment variables ishlatiladi');
+
+    // Environment variables'dan olish
+    final envVars = Platform.environment;
+    return envVars;
+  }
+
+  final lines = await envFile.readAsLines();
+
+  for (final line in lines) {
+    if (line.trim().isEmpty || line.trim().startsWith('#')) continue;
+
+    final parts = line.split('=');
+    if (parts.length >= 2) {
+      final key = parts.first.trim();
+      final value = parts.sublist(1).join('=').trim();
+
+      var finalValue = value;
+      if (finalValue.startsWith('"') && finalValue.endsWith('"') ||
+          finalValue.startsWith("'") && finalValue.endsWith("'")) {
+        finalValue = finalValue.substring(1, finalValue.length - 1);
+      }
+      envMap[key] = finalValue;
+    }
+  }
+
+  // Environment variables bilan birlashtirish (env vars prioritet)
+  final envVars = Platform.environment;
+  envMap.addAll(envVars);
+
+  return envMap;
+}
+
 Future<void> main() async {
   print('🚀 Server boshlash jarayoni...');
 
   try {
-    final dotenv = DotEnv(); // includePlatformEnvironment: false
-    dotenv.load();
-
-    final envVariables = {
-      ...Platform.environment,
-      ...dotenv.map,
-    };
-
+    final envVariables = await loadEnvMap();
     print('✅ Environment variables yuklandi.');
 
     final appEnv = Env.fromEnv(variables: envVariables);
