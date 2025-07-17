@@ -78,4 +78,5 @@ class AuthRepositoryImpl implements AuthRepository {
       _log.severe('Foydalanuvchi ($userId) profilini yaratishda xatolik: $e');
     }
   }
+
 }
