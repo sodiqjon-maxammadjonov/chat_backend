@@ -18,11 +18,11 @@ dependencies:
 
   # --- DATABASE ---
   # PostgreSQL bilan ishlash uchun rasmiy paket
-  postgres: ^2.6.1
+  postgres: ^3.0.0
 
   # --- UTILS & HELPERS ---
   # Dependency Injection uchun
-  get_it: ^7.7.0
+  get_it: ^8.0.3
   # .env fayllaridan o'qish uchun
   dotenv: ^4.2.0
   # Funktsional dasturlash uchun (Either, Option)
@@ -41,13 +41,17 @@ dependencies:
   json_annotation: ^4.9.0
   # Loglarni yozib borish uchun
   logging: ^1.2.0
+  args: ^2.7.0
 
 # Faqat ishlab chiqish jarayonida kerak bo'ladigan bog'liqliklar
 dev_dependencies:
   # Tavsiya etilgan linter qoidalari to'plami
-  lints: ^3.0.0
+  lints: ^6.0.0
   # Test yozish uchun
   test: ^1.24.0
   # Kod generatsiyasi uchun
   build_runner: ^2.4.11
   json_serializable: ^6.8.0
+flutter:
+  assets:
+   - .env
