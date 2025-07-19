@@ -1,41 +1,26 @@
-# 1. Dart bilan build bosqichi
+# Dockerfile (CLOUDRUN UCHUN OPTIMALLASHTIRILGAN VERSIYA)
+
+# 1-BOSQICH: Qurish (Build)
 FROM dart:stable AS build
-
 WORKDIR /app
-
-# Dependencies olish
 COPY pubspec.* ./
 RUN dart pub get
-
-# Kodlarni copy qilish
-COPY . ./
-
-# Binary yaratish
+COPY . .
+RUN dart pub get --offline
+# Kompilyatsiya
 RUN dart compile exe bin/server.dart -o bin/server
 
-# 2. Runtime image
-FROM debian:stable-slim
-
-# Kerakli paketlarni o'rnatish (Cloud SQL Proxy uchun)
-RUN apt-get update && apt-get install -y \
-    ca-certificates \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
+# 2-BOSQICH: Ishga tushirish (Runtime)
+FROM scratch
 WORKDIR /app
-
-# Compiled binary'ni copy qilish
+# Faqat kerakli fayllarni olamiz
 COPY --from=build /app/bin/server /app/bin/server
+# Tizim sertifikatlari
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
-# Executable qilish
-RUN chmod +x /app/bin/server
-
-# Environment variables
-ENV PORT=8080
-ENV HOST=0.0.0.0
-
-# Port expose qilish
+# Cloud Run avtomatik tarzda `PORT=8080`'ni o'rnatadi.
+# Biz `EXPOSE` ni shunchaki ma'lumot uchun qoldiramiz.
 EXPOSE 8080
 
-# Faqat binary'ni ishga tushirish
+# Ishga tushirish buyrug'i
 CMD ["/app/bin/server"]
